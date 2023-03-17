@@ -5,7 +5,7 @@ Function Get-OfficeVersion{
     [PSCustomObject]@{
         ComputerName  = $env:COMPUTERNAME
         OfficeVersion = $OfficeVersion
-        UpToDate      = ($OfficeVersion -ge $Version) ? $True : $False
+        UpToDate      = if($OfficeVersion -ge $Version){$True}else{$false}
     }
 }
 
