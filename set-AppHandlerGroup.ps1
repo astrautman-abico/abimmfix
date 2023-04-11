@@ -29,18 +29,6 @@ if (!($Regkey)){
     exit 1
 }
 
-# Make sure internet connectivity
-if (!(Test-NetConnection 'google.com')){
-    "Not on the internet"
-    exit 1
-}
-
-# Make sure can reach beacon.abimm.com
-if (!(Test-NetConnection 'beacon.abimm.com')){
-    "Can't reach Beacon"
-    exit 1
-}
-
 # Read beacon.abimm.com/grouplist.json
 $json = invoke-RestMethod -Uri $URI
 
@@ -48,16 +36,8 @@ $json = invoke-RestMethod -Uri $URI
 $ComputerObj = $json | where-Object hostname -eq $env:COMPUTERNAME
 $GroupAssignment = $ComputerObj.group
 
-# Verify beacon.abimm.com/groupX.htm exists
-try {
-    $WebTest = invoke-restmethod -uri "https://beacon.abimm.com/Group$($GroupAssignment).htm"
-} Catch {
-    "Can't reach assigned group page."
-    exit 1
-}
-
 # Set Environment Variable to equal group assignment
 Setx TerminalGroupAssignment $GroupAssignment /M
 
 # Rewrite Apphandler settings ini to match group assignment
-Set-OrAddIniValue -FilePath c:\windows\syswow64\application_handler\settings.ini -keyValueList @{ KeepAlive = " Group$($GroupAssignment)"}
+Set-OrAddIniValue -FilePath c:\windows\syswow64\application_handler\settings.ini -keyValueList @{ KeepAlive = " Group$($GroupAssignment).htm"}
