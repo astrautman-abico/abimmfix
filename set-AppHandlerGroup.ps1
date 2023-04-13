@@ -41,6 +41,3 @@ Setx TerminalGroupAssignment $GroupAssignment /M
 
 # Rewrite Apphandler settings ini to match group assignment
 Set-OrAddIniValue -FilePath c:\windows\syswow64\application_handler\settings.ini -keyValueList @{ KeepAlive = " Group$($GroupAssignment).htm"}
-
-# Restart Terminal to force apphandler to reread settings.ini
-restart-computer -Force
