@@ -22,12 +22,6 @@ function Set-OrAddIniValue{
 
 $URI = 'https://beacon.abimm.com/momoa.html'
 
-# make sure this is running on a terminal
-$Regkey = Get-ItemProperty HKLM:\software\Microsoft\Windows\CurrentVersion\OEMInformation\ | Select-String 'Terminal'
-if (!($Regkey)){
-    "Not a Terminal"
-    exit 1
-}
 
 # Read beacon.abimm.com/grouplist.json
 $json = invoke-RestMethod -Uri $URI
