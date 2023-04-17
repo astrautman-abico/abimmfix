@@ -26,15 +26,19 @@ $URI = 'https://beacon.abimm.com/momoa.html'
 # Read beacon.abimm.com/grouplist.json
 $json = invoke-RestMethod -Uri $URI
 
-# Find matching computername and group assigment
-$ComputerObj = $json | where-Object hostname -eq $env:COMPUTERNAME
-$GroupAssignment = $ComputerObj.group
+if (!($null -eq $json)){
+    # Find matching computername and group assigment
+    $ComputerObj = $json | where-Object hostname -eq $env:COMPUTERNAME
 
-# Set Environment Variable to equal group assignment
-Setx TerminalGroupAssignment $GroupAssignment /M
-
-# Rewrite Apphandler settings ini to match group assignment
-Set-OrAddIniValue -FilePath c:\windows\syswow64\application_handler\settings.ini -keyValueList @{ KeepAlive = " Group$($GroupAssignment).htm"}
-
-# Restart Terminal to force apphandler to reread settings.ini
-restart-computer -Force
+    if ($null -eq $ComputerObj) {
+        Set-OrAddIniValue -FilePath c:\windows\syswow64\application_handler\settings.ini -keyValueList @{ KeepAlive = " KeepAlive.htm"}
+    } else {
+        $GroupAssignment = $ComputerObj.group
+        
+        # Set Environment Variable to equal group assignment
+        Setx TerminalGroupAssignment $GroupAssignment /M
+        
+        # Rewrite Apphandler settings ini to match group assignment
+        Set-OrAddIniValue -FilePath c:\windows\syswow64\application_handler\settings.ini -keyValueList @{ KeepAlive = " Group$($GroupAssignment).htm"}
+    }
+}
